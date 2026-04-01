@@ -61,6 +61,7 @@ func TestRepositories(t *testing.T) {
 var (
 	ctx                          context.Context
 	testEnv                      *envtest.Environment
+	stopManager                  context.CancelFunc
 	k8sClient                    client.WithWatch
 	userClientFactory            authorization.UnprivilegedClientFactory
 	spaceScopedUserClientFactory authorization.UserClientFactory
@@ -118,7 +119,7 @@ var _ = BeforeSuite(func() {
 	label_indexer.NewWebhook().SetupWebhookWithManager(k8sManager)
 	routesdestwebhook.NewRouteAppDestinationsWebhook().SetupWebhookWithManager(k8sManager)
 
-	DeferCleanup(helpers.StartK8sManager(k8sManager))
+	stopManager = helpers.StartK8sManager(k8sManager)
 
 	clientScheme := runtime.NewScheme()
 	Expect(korifiv1alpha1.AddToScheme(clientScheme)).To(Succeed())
@@ -142,7 +143,8 @@ var _ = BeforeSuite(func() {
 })
 
 var _ = AfterSuite(func() {
-	Expect(testEnv.Stop()).To(Succeed())
+	stopManager()
+	Eventually(testEnv.Stop, "1m").Should(Succeed())
 })
 
 var _ = BeforeEach(func() {
