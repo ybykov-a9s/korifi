@@ -38,13 +38,6 @@ type MetadataPatch struct {
 	Labels      map[string]*string `json:"labels,omitempty"`
 }
 
-func (p MetadataPatch) Validate() error {
-	return validation.ValidateStruct(&p,
-		validation.Field(&p.Annotations, validation.Map().Keys(validation.By(cloudfoundryKeyCheck)).AllowExtraKeys()),
-		validation.Field(&p.Labels, validation.Map().Keys(validation.By(cloudfoundryKeyCheck)).AllowExtraKeys()),
-	)
-}
-
 func cloudfoundryKeyCheck(key any) error {
 	keyStr, ok := key.(string)
 	if !ok {

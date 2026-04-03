@@ -87,6 +87,7 @@ var _ = Describe("ServiceBrokerRepo", func() {
 						"Labels": HaveKeyWithValue("label", "label-value"),
 						"Annotations": Equal(map[string]string{
 							"annotation": "annotation-value",
+							korifiv1alpha1.LabelSignatureAnnotationKey: testLabelSig(brokerRecord.Metadata.Labels),
 						}),
 					}),
 				}))

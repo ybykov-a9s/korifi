@@ -68,7 +68,7 @@ var _ = BeforeSuite(func() {
 
 	adminClient, stopClientCache = helpers.NewCachedClient(testEnv.Config)
 
-	label_indexer.NewWebhook().SetupWebhookWithManager(k8sManager)
+	label_indexer.NewWebhook([]byte("test-secret")).SetupWebhookWithManager(k8sManager)
 
 	stopManager = helpers.StartK8sManager(k8sManager)
 
